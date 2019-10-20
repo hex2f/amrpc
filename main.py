@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from music import getPlaying, Track
 from discord import Discord
 import time
