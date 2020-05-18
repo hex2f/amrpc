@@ -15,13 +15,13 @@ class Discord:
         self.cleared = True
 
     def setTrack(self, track):
-        print("Changing track to: " + track.track + " by " + track.artist)
+        print("Changing track to: " + track.track + " by " + track.artist + "(" + track.artist.lower().replace(' ', '_') + ")")
         self.cleared = False
         self.rpc.update(
             state="By " + track.artist,
             details=track.track,
             start=int(track.start),
-            large_image="logo",
+            large_image=track.artist.lower().replace(' ', '_'),
             large_text="Apple Music",
-            small_image="github",
-            small_text="github/memeone/amrpc")
+            small_image="logo",
+            small_text="github.com/leahlundqvist")
