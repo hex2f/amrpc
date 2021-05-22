@@ -6,7 +6,7 @@ const config = require('../config.json')
 
 const client = new DiscordRPC.Client({ transport: 'ipc' })
 
-export async function setActivity (song: SongDetails, albumCoverHash: string): Promise<void> {
+export async function setActivity (song: SongDetails, albumCoverHash?: string): Promise<void> {
   await client.setActivity({
     details: song.name,
     state: `By ${song.artist}`,

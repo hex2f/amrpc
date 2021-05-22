@@ -6,7 +6,7 @@ if application "Music" is running then
               get properties
             end tell
         else
-          tell me to display alert "No Cover Art found."
+          return "none"
         end if
     end tell
   end tell
