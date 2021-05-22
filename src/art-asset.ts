@@ -1,17 +1,10 @@
 import fetch from 'node-fetch'
-import resizeImg from 'resize-image-buffer'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const config = require('../config.json')
 
 export async function uploadBuffer (buffer: Buffer, name: string): Promise<{ id: string, type: number, name: string }> {
-  const resized = await resizeImg(buffer, {
-    width: 512,
-    height: 512,
-    format: 'png'
-  })
-
-  const encoded = resized.toString('base64')
+  const encoded = buffer.toString('base64')
 
   const res = await fetch(`https://discord.com/api/v9/oauth2/applications/${config.id}/assets`, {
     body: JSON.stringify({ name, image: `data:image/png;base64,${encoded}`, type: '1' }),

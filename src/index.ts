@@ -1,5 +1,6 @@
 import { JsonDB } from 'node-json-db'
 import { Config } from 'node-json-db/dist/lib/JsonDBConfig'
+import resizeImg from 'resize-image-buffer'
 import getCurrentAlbumArt from './album-art'
 import sha1 from 'sha1'
 import { removeAsset, uploadBuffer } from './art-asset'
@@ -23,14 +24,20 @@ async function update (song: SongDetails): Promise<void> {
       const albumCoverData = await getCurrentAlbumArt()
 
       if (albumCoverData !== undefined) {
-        let hash = sha1(albumCoverData).substr(0, 32)
+        const resized = await resizeImg(albumCoverData, {
+          width: 512,
+          height: 512,
+          format: 'png'
+        })
+
+        let hash = sha1(resized).substr(0, 32)
 
         console.log(`[${song.state}] "${song.name}" on "${song.album}" by "${song.artist}" - [cover:${hash}]`)
 
         try {
           if (!covercache.exists(`/${hash}`)) {
             console.log(`${hash} not in cache. Uploading...`)
-            const asset = await uploadBuffer(albumCoverData, hash)
+            const asset = await uploadBuffer(resized, hash)
             covercache.push(`/${hash}`, { id: asset.id, timestamp: Date.now() })
           }
 
