@@ -5,6 +5,7 @@ import sha1 from 'sha1'
 import { removeAsset, uploadBuffer } from './art-asset'
 import NowPlaying, { SongDetails } from './now-playing'
 import { setActivity, clearActivity } from './rpc'
+import { writeFileSync } from 'fs'
 
 const covercache = new JsonDB(new Config('cover-cache', true, false, '/'))
 
@@ -19,12 +20,13 @@ async function update (song: SongDetails): Promise<void> {
       lastId = song.id
       lastState = song.state
 
-      console.log(`[${song.state}] "${song.name}" on "${song.album}" by "${song.artist}"`)
-
       const items = covercache.getData('/')
       const albumCoverData = await getCurrentAlbumArt()
-      if (albumCoverData) {
+
+      if (albumCoverData !== undefined) {
         let hash = sha1(albumCoverData).substr(0, 32)
+
+        console.log(`[${song.state}] "${song.name}" on "${song.album}" by "${song.artist}" - [cover:${hash}]`)
 
         try {
           if (!covercache.exists(`/${hash}`)) {
@@ -40,13 +42,15 @@ async function update (song: SongDetails): Promise<void> {
             covercache.delete(`/${oldestKey}`)
           }
         } catch (e) {
+          console.log('Failed to upload album art', e)
           hash = 'empty'
         }
 
         await setActivity(song, hash)
+      } else {
+        console.log(`[${song.state}] "${song.name}" on "${song.album}" by "${song.artist}"`)
+        await setActivity(song, 'empty')
       }
-
-      await setActivity(song, 'empty')
     }
   } catch (e) {
     console.error(e)
