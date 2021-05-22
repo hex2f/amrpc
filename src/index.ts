@@ -24,24 +24,29 @@ async function update (song: SongDetails): Promise<void> {
       const items = covercache.getData('/')
       const albumCoverData = await getCurrentAlbumArt()
       if (albumCoverData) {
-        const hash = sha1(albumCoverData).substr(0, 32)
+        let hash = sha1(albumCoverData).substr(0, 32)
 
-        if (!covercache.exists(`/${hash}`)) {
-          console.log(`${hash} not in cache. Uploading...`)
-          const asset = await uploadBuffer(albumCoverData, hash)
-          covercache.push(`/${hash}`, { id: asset.id, timestamp: Date.now() })
+        try {
+          if (!covercache.exists(`/${hash}`)) {
+            console.log(`${hash} not in cache. Uploading...`)
+            const asset = await uploadBuffer(albumCoverData, hash)
+            covercache.push(`/${hash}`, { id: asset.id, timestamp: Date.now() })
+          }
+
+          if (Object.keys(items).length > 250) {
+            const [oldestKey, oldest] = Object.entries(items).sort((a: any, b: any) => a[1].timestamp - b[1].timestamp)[0] as [string, {id: string}]
+            console.log(`Cache overflow, deleting ${oldestKey}`)
+            await removeAsset(oldest.id)
+            covercache.delete(`/${oldestKey}`)
+          }
+        } catch (e) {
+          hash = 'empty'
         }
 
-        if (Object.keys(items).length > 250) {
-          const [oldestKey, oldest] = Object.entries(items).sort((a: any, b: any) => a[1].timestamp - b[1].timestamp)[0] as [string, {id: string}]
-          console.log(`Cache overflow, deleting ${oldestKey}`)
-          await removeAsset(oldest.id)
-          covercache.delete(`/${oldestKey}`)
-        }
         await setActivity(song, hash)
       }
 
-      await setActivity(song)
+      await setActivity(song, 'empty')
     }
   } catch (e) {
     console.error(e)

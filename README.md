@@ -8,7 +8,7 @@ Displays your currently playing Apple Music tracks in Discord, similar to Spotif
 `npm start` lints, compiles and runs the program. Once it has been compiled you can use `node out/index.js`.
 
 You'll need to create an application named `Music` in the Discord developer panel.
-Upload the [logo](https://cdn.discordapp.com/app-assets/635251785136603166/842193816881463306.png) and [paused](https://cdn.discordapp.com/app-assets/635251785136603166/842185296523034634.png) assets to the applications art assets (named accordingly).
+Upload the [logo](https://cdn.discordapp.com/app-assets/635251785136603166/842193816881463306.png), [paused](https://cdn.discordapp.com/app-assets/635251785136603166/842185296523034634.png) and [empty](https://cdn.discordapp.com/app-assets/635251785136603166/845730360264491020.png) assets to the applications art assets (named accordingly).
 
 Create a `config.json` in the root directory of this project containing
 
