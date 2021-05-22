@@ -5,7 +5,6 @@ import sha1 from 'sha1'
 import { removeAsset, uploadBuffer } from './art-asset'
 import NowPlaying, { SongDetails } from './now-playing'
 import { setActivity, clearActivity } from './rpc'
-import { writeFileSync } from 'fs'
 
 const covercache = new JsonDB(new Config('cover-cache', true, false, '/'))
 
